@@ -12,15 +12,30 @@ Conversor universal de arquivos — Web App que converte qualquer formato para o
 
 | Categoria | Entrada | Saída |
 |-----------|---------|-------|
-| **Imagem** | PNG, JPG, JPEG, WebP, BMP, GIF, TIFF, ICO | PNG, JPG, WebP, BMP, GIF, TIFF, ICO, PDF |
+| **Imagem** | PNG, JPG, WebP, BMP, GIF, TIFF, ICO, HEIC, HEIF, AVIF | PNG, JPG, WebP, BMP, GIF, TIFF, ICO, PDF |
 | **Câmera RAW** | CR2, NEF, ARW, DNG, RAF, ORF, RW2 | PNG, JPG, TIFF |
+| **HDR / EXR** | EXR, HDR | PNG, JPG, TIFF, EXR |
 | **Adobe** | PSD, AI, EPS | PNG, JPG, PDF, SVG |
 | **Vetor / CNC / Plotter** | SVG, DXF, G-code | SVG, DXF, PNG, PDF, EPS, TXT |
 | **3D** | STL, OBJ, PLY, GLTF, GLB, 3MF, FBX, OFF | STL, OBJ, PLY, GLTF, GLB, 3MF |
+| **CAD** | STEP, STP, IGES, IGS | STL, OBJ |
 | **Áudio** | MP3, WAV, FLAC, OGG, AAC, M4A, WMA | MP3, WAV, FLAC, OGG, AAC, M4A |
 | **Vídeo** | MP4, AVI, MKV, MOV, WebM, FLV | MP4, AVI, MKV, MOV, WebM, MP3, GIF |
+| **Apresentação** | PPTX, PPT | PDF, PNG |
 | **Documento** | PDF, DOCX, TXT, HTML, MD | PDF, DOCX, TXT, HTML, MD, PNG |
+| **eBook** | EPUB | PDF, TXT, HTML |
 | **Dados** | CSV, JSON, XLSX, XLS | CSV, JSON, XLSX |
+| **Config / Dev** | YAML, YML, TOML, XML, INI | JSON, YAML, TOML, XML, CSV |
+| **Banco de dados** | SQLite, DB, SQL | CSV, JSON, XLSX, SQL, SQLite |
+| **Notebook** | IPYNB | HTML, PDF, MD |
+| **Fontes** | TTF, OTF, WOFF, WOFF2 | TTF, OTF, WOFF, WOFF2 |
+| **Legendas** | SRT, VTT, ASS, SSA, SBV | SRT, VTT, ASS, SBV |
+| **Médico** | DCM (DICOM) | PNG, JPG, TIFF |
+| **Geoespacial** | GeoJSON, KML, GPX | GeoJSON, KML, GPX, CSV |
+| **Arquivos** | ZIP, TAR, GZ, 7Z | ZIP, TAR, 7Z |
+| **Email** | EML | PDF, TXT, HTML |
+| **Agenda / Contatos** | ICS, VCF | CSV, JSON |
+| **QR Code** | TXT (qualquer texto/URL) | PNG (QR Code) |
 
 ---
 
@@ -43,27 +58,39 @@ Conversor universal de arquivos — Web App que converte qualquer formato para o
 | Python 3.10+ | `brew install python` | `apt install python3` |
 | FFmpeg | `brew install ffmpeg` | `apt install ffmpeg` |
 | Ghostscript | `brew install ghostscript` | `apt install ghostscript` |
+| LibreOffice *(opcional, PPTX→PDF)* | `brew install --cask libreoffice` | `apt install libreoffice` |
+| gmsh *(opcional, STEP/IGES)* | `brew install gmsh` | `apt install gmsh` |
 
 ### Python
 
 ```
-fastapi
-uvicorn[standard]
-python-multipart
-Pillow
-PyMuPDF
-python-docx
-weasyprint
-markdown
-pandas
-openpyxl
-rawpy
-numpy
-psd-tools
-cairosvg
-ezdxf
-trimesh
+pip install -r requirements.txt
 ```
+
+Principais dependências:
+
+| Biblioteca | Uso |
+|---|---|
+| `Pillow`, `pillow-heif` | Imagens raster + HEIC/HEIF/AVIF |
+| `rawpy` | Câmera RAW (CR2, NEF, ARW…) |
+| `opencv-python`, `imageio` | HDR e EXR |
+| `psd-tools` | Adobe PSD |
+| `cairosvg`, `ezdxf` | SVG ↔ DXF, EPS, AI |
+| `trimesh` | 3D (STL, OBJ, GLTF, GLB…) |
+| `gmsh` *(opcional)* | CAD (STEP, IGES) |
+| `PyMuPDF`, `python-docx`, `weasyprint` | Documentos PDF/DOCX |
+| `pandas`, `openpyxl` | CSV, JSON, XLSX |
+| `pyyaml`, `tomli`, `tomli-w` | YAML, TOML |
+| `python-pptx` | Apresentações PPTX |
+| `fonttools`, `brotli` | Fontes TTF/OTF/WOFF/WOFF2 |
+| `pysubs2` | Legendas SRT/VTT/ASS |
+| `ebooklib` | eBooks EPUB |
+| `qrcode[pil]` | Geração de QR Code |
+| `pydicom` | Imagens médicas DICOM |
+| `nbconvert` | Jupyter Notebooks |
+| `gpxpy` | Arquivos GPX |
+| `py7zr` | Arquivos 7Z |
+| `icalendar`, `vobject` | Calendário ICS e contatos VCF |
 
 ---
 
@@ -102,12 +129,28 @@ Convertudo/
 │   └── converters/
 │       ├── registry.py          # Mapa de conversões e roteador central
 │       ├── image.py             # Pillow + rawpy (RAW de câmera)
+│       ├── heic.py              # pillow-heif (HEIC, HEIF, AVIF)
+│       ├── hdr.py               # opencv/imageio (EXR, HDR)
 │       ├── audio.py             # FFmpeg
 │       ├── video.py             # FFmpeg (MP4→GIF, extração de áudio)
 │       ├── document.py          # PyMuPDF, python-docx, weasyprint, pandas
 │       ├── threed.py            # trimesh (STL, OBJ, GLTF, GLB…)
+│       ├── cad.py               # gmsh (STEP, IGES)
 │       ├── vector.py            # ezdxf + cairosvg (DXF, SVG, EPS, AI, G-code)
-│       └── adobe.py             # psd-tools (PSD)
+│       ├── adobe.py             # psd-tools (PSD)
+│       ├── presentation.py      # python-pptx + LibreOffice (PPTX)
+│       ├── config.py            # pyyaml, tomli (YAML, TOML, XML, INI)
+│       ├── database.py          # sqlite3 (SQLite, SQL)
+│       ├── font.py              # fonttools (TTF, OTF, WOFF, WOFF2)
+│       ├── subtitle.py          # pysubs2 (SRT, VTT, ASS, SBV)
+│       ├── ebook.py             # ebooklib (EPUB)
+│       ├── qrcode_conv.py       # qrcode (TXT → QR PNG)
+│       ├── medical.py           # pydicom (DICOM)
+│       ├── notebook.py          # nbconvert (IPYNB)
+│       ├── geo.py               # gpxpy (GeoJSON, KML, GPX)
+│       ├── archive.py           # zipfile, tarfile, py7zr (ZIP, TAR, 7Z)
+│       ├── email_conv.py        # email stdlib (EML)
+│       └── contact.py           # icalendar, vobject (ICS, VCF)
 └── frontend/
     ├── index.html
     ├── style.css

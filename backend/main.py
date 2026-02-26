@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
-from converters.registry import SUPPORTED_CONVERSIONS, CATEGORIES, get_supported_outputs, route_conversion
+from converters.registry import SUPPORTED_CONVERSIONS, CATEGORIES, get_supported_outputs, route_conversion, VIRTUAL_FORMAT_EXT
 
 app = FastAPI(title="Convertudo", version="1.0.0")
 
@@ -75,8 +75,9 @@ async def convert_file(
 
     # Criar arquivos temporários
     job_id = uuid.uuid4().hex
+    actual_ext = VIRTUAL_FORMAT_EXT.get(target_format, target_format)
     input_path = TEMP_DIR / f"{job_id}_input.{input_ext}"
-    output_path = TEMP_DIR / f"{job_id}_output.{target_format}"
+    output_path = TEMP_DIR / f"{job_id}_output.{actual_ext}"
 
     try:
         # Salvar upload
@@ -104,15 +105,32 @@ async def convert_file(
             "mov": "video/quicktime", "webm": "video/webm",
             "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
             "csv": "text/csv", "json": "application/json",
             "txt": "text/plain", "html": "text/html", "md": "text/markdown",
+            "yaml": "text/yaml", "yml": "text/yaml", "toml": "application/toml",
+            "xml": "application/xml", "ini": "text/plain",
             "stl": "model/stl", "obj": "model/obj", "gltf": "model/gltf+json",
             "glb": "model/gltf-binary", "ply": "application/octet-stream",
             "3mf": "application/vnd.ms-package.3dmanufacturing-3dmodel+xml",
             "dxf": "application/dxf",
+            "ttf": "font/ttf", "otf": "font/otf",
+            "woff": "font/woff", "woff2": "font/woff2",
+            "epub": "application/epub+zip",
+            "sqlite": "application/x-sqlite3", "db": "application/x-sqlite3",
+            "sql": "text/plain",
+            "zip": "application/zip", "tar": "application/x-tar",
+            "gz": "application/gzip", "7z": "application/x-7z-compressed",
+            "srt": "text/plain", "vtt": "text/vtt", "ass": "text/plain",
+            "dcm": "application/dicom",
+            "geojson": "application/geo+json", "kml": "application/vnd.google-earth.kml+xml",
+            "gpx": "application/gpx+xml",
+            "eml": "message/rfc822",
+            "ics": "text/calendar", "vcf": "text/vcard",
+            "ipynb": "application/x-ipynb+json",
         }
-        media_type = MIME_MAP.get(target_format, "application/octet-stream")
-        download_name = f"{original_name}.{target_format}"
+        media_type = MIME_MAP.get(actual_ext, "application/octet-stream")
+        download_name = f"{original_name}.{actual_ext}"
 
         return FileResponse(
             path=str(output_path),

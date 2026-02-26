@@ -1,16 +1,54 @@
 fastapi
 uvicorn[standard]
 python-multipart
+# Imagens
 Pillow
+pillow-heif
+opencv-python
+imageio
+# RAW
+rawpy
+numpy
+# Adobe
+psd-tools
+# Vetores / CNC
+cairosvg
+ezdxf
+# 3D
+trimesh
+# CAD (opcional — requer gmsh instalado no sistema)
+# gmsh
+# Documentos
 PyMuPDF
 python-docx
 weasyprint
 markdown
+# Dados / Config
 pandas
 openpyxl
-rawpy
-numpy
-psd-tools
-cairosvg
-ezdxf
-trimesh
+pyyaml
+tomli
+tomli-w
+# Apresentação
+python-pptx
+# Fontes
+fonttools
+brotli
+# Legendas
+pysubs2
+# eBook
+ebooklib
+# QR Code
+qrcode[pil]
+# Médico
+pydicom
+# Notebook
+nbconvert
+nbformat
+# Geoespacial
+gpxpy
+# Arquivo comprimido
+py7zr
+# Agenda / Contatos
+icalendar
+vobject

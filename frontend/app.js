@@ -4,27 +4,70 @@ const API_BASE = '';
 
 // Icons por categoria
 const CATEGORY_ICONS = {
-  'Imagem':    '🖼️',
-  'RAW':       '📷',
-  'Adobe':     '🎨',
-  'Vetor/CNC': '📐',
-  '3D':        '🧊',
-  'Áudio':     '🎵',
-  'Vídeo':     '🎬',
-  'Documento': '📄',
-  'Dados':     '📊',
+  'Imagem':         '🖼️',
+  'RAW':            '📷',
+  'HDR':            '✨',
+  'Adobe':          '🎨',
+  'Vetor/CNC':      '📐',
+  '3D':             '🧊',
+  'CAD':            '🔧',
+  'Áudio':          '🎵',
+  'Vídeo':          '🎬',
+  'Apresentação':   '📊',
+  'Documento':      '📄',
+  'eBook':          '📚',
+  'Dados':          '📈',
+  'Config':         '⚙️',
+  'Banco de dados': '🗄️',
+  'Notebook':       '📓',
+  'Fonte':          '🔤',
+  'Legenda':        '💬',
+  'Médico':         '🏥',
+  'Geoespacial':    '🌍',
+  'Arquivo':        '🗜️',
+  'Email':          '📧',
+  'Agenda':         '📅',
 };
 
 const EXT_ICONS = {
+  // Imagem
   png: '🖼️', jpg: '🖼️', jpeg: '🖼️', webp: '🖼️', gif: '🎞️', bmp: '🖼️',
-  tiff: '🖼️', ico: '🖼️', svg: '📐', dxf: '📐', gcode: '⚙️',
-  psd: '🎨', ai: '🎨', eps: '🎨',
+  tiff: '🖼️', ico: '🖼️', heic: '📷', heif: '📷', avif: '🖼️',
+  // RAW
   cr2: '📷', nef: '📷', arw: '📷', dng: '📷', raf: '📷', orf: '📷', rw2: '📷',
+  // HDR
+  exr: '✨', hdr: '✨',
+  // Adobe / Vetor
+  svg: '📐', dxf: '📐', gcode: '⚙️',
+  psd: '🎨', ai: '🎨', eps: '🎨',
+  // 3D / CAD
   stl: '🧊', obj: '🧊', ply: '🧊', gltf: '🧊', glb: '🧊', '3mf': '🧊', fbx: '🧊', off: '🧊',
+  step: '🔧', stp: '🔧', iges: '🔧', igs: '🔧',
+  // Áudio / Vídeo
   mp3: '🎵', wav: '🎵', flac: '🎵', ogg: '🎵', aac: '🎵', m4a: '🎵', wma: '🎵',
   mp4: '🎬', avi: '🎬', mkv: '🎬', mov: '🎬', webm: '🎬', flv: '🎬',
-  pdf: '📕', docx: '📝', txt: '📄', html: '🌐', md: '📝',
-  csv: '📊', json: '📊', xlsx: '📊', xls: '📊',
+  // Apresentação
+  pptx: '📊', ppt: '📊',
+  // Documento / eBook
+  pdf: '📕', docx: '📝', txt: '📄', html: '🌐', md: '📝', epub: '📚',
+  // Dados / Config / DB
+  csv: '📈', json: '📈', xlsx: '📈', xls: '📈',
+  yaml: '⚙️', yml: '⚙️', toml: '⚙️', xml: '⚙️', ini: '⚙️',
+  sqlite: '🗄️', db: '🗄️', sql: '🗄️',
+  // Notebook
+  ipynb: '📓',
+  // Fonte
+  ttf: '🔤', otf: '🔤', woff: '🔤', woff2: '🔤',
+  // Legenda
+  srt: '💬', vtt: '💬', ass: '💬', ssa: '💬', sbv: '💬',
+  // Médico
+  dcm: '🏥',
+  // Geo
+  geojson: '🌍', kml: '🌍', gpx: '🌍',
+  // Arquivo
+  zip: '🗜️', tar: '🗜️', gz: '🗜️', '7z': '🗜️',
+  // Email / Agenda
+  eml: '📧', ics: '📅', vcf: '📅',
 };
 
 // State
