@@ -19,20 +19,85 @@
     <main class="main">
       <!-- Step 1: Upload -->
       <section id="step-upload" class="step active">
-        <div class="drop-zone" id="dropZone">
-          <div class="drop-zone-content">
-            <div class="drop-icon">↑</div>
-            <p class="drop-text">Arraste seu arquivo aqui</p>
-            <p class="drop-sub">ou</p>
-            <label class="btn btn-secondary" for="fileInput">
-              Escolher arquivo
-            </label>
-            <input type="file" id="fileInput" hidden />
+
+        <!-- Tabs -->
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tabFile">📁 Arquivo</button>
+          <button class="mode-tab" id="tabUrl">🔗 URL</button>
+        </div>
+
+        <!-- Painel: Arquivo -->
+        <div id="panelFile">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+              <div class="drop-icon">↑</div>
+              <p class="drop-text">Arraste seu arquivo aqui</p>
+              <p class="drop-sub">ou</p>
+              <label class="btn btn-secondary" for="fileInput">
+                Escolher arquivo
+              </label>
+              <input type="file" id="fileInput" hidden />
+            </div>
+          </div>
+          <div class="supported-hint">
+            <span>Suporta: Imagens • RAW • HDR/EXR • Adobe PSD/AI/EPS • Vetores/CNC • 3D • CAD • Áudio • Vídeo • Documentos • Office • eBook • Dados • BigData • Config • Banco de dados • Código-fonte • Científico • Bioinformática • Certificados SSL • Financeiro • Email • Agenda • Geoespacial • Arquivos • Playlists • HAR</span>
           </div>
         </div>
-        <div class="supported-hint">
-          <span>Suporta: Imagens • RAW • HDR/EXR • Adobe PSD/AI/EPS • Vetores/CNC • 3D • CAD • Áudio • Vídeo • Documentos • Office • eBook • Dados • BigData • Config • Banco de dados • Código-fonte • Científico • Bioinformática • Certificados SSL • Financeiro • Email • Agenda • Geoespacial • Arquivos • Playlists • HAR</span>
+
+        <!-- Painel: URL -->
+        <div id="panelUrl" class="hidden">
+          <div class="url-platforms">
+            <span>YouTube</span><span>Instagram</span><span>TikTok</span>
+            <span>Twitter/X</span><span>Facebook</span><span>+1000 sites</span>
+          </div>
+
+          <div class="url-input-wrap">
+            <input
+              type="url"
+              id="urlInput"
+              placeholder="Cole o link do vídeo aqui..."
+              autocomplete="off"
+            />
+            <div class="url-meta hidden" id="urlMeta">
+              <span class="url-meta-icon" id="urlMetaIcon">🎬</span>
+              <span class="url-meta-title" id="urlMetaTitle"></span>
+            </div>
+          </div>
+
+          <div class="url-options">
+            <div class="format-selector">
+              <label class="label" for="dlFormat">Formato:</label>
+              <div class="select-wrapper">
+                <select id="dlFormat">
+                  <option value="mp4">🎬 Vídeo MP4</option>
+                  <option value="webm">🎬 Vídeo WebM</option>
+                  <option value="mp3">🎵 Áudio MP3</option>
+                  <option value="m4a">🎵 Áudio M4A</option>
+                </select>
+              </div>
+            </div>
+            <div class="format-selector" id="qualityGroup">
+              <label class="label" for="dlQuality">Qualidade:</label>
+              <div class="select-wrapper">
+                <select id="dlQuality">
+                  <option value="best">✨ Melhor disponível</option>
+                  <option value="1080">1080p</option>
+                  <option value="720">720p</option>
+                  <option value="480">480p</option>
+                  <option value="360">360p</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-convert" id="btnDownloadUrl" disabled>
+            <span class="btn-text">⬇ Baixar</span>
+            <span class="btn-spinner hidden">⟳</span>
+          </button>
+
+          <p class="url-note">Apenas para uso pessoal. Respeite os direitos autorais e os Termos de Uso de cada plataforma.</p>
         </div>
+
       </section>
 
       <!-- Step 2: Configurar conversão -->

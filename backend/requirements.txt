@@ -69,3 +69,5 @@ ofxparse
 extract-msg
 # Office aberto (RTF)
 striprtf
+# Downloader de mídia (YouTube, Instagram, TikTok, etc.)
+yt-dlp

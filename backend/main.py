@@ -1,5 +1,6 @@
 import os
 import uuid
+import shutil
 import tempfile
 from pathlib import Path
 
@@ -147,6 +148,63 @@ async def convert_file(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/api/info")
+async def get_url_info(url: str):
+    """Retorna metadados de uma URL de mídia (título, duração, plataforma)."""
+    try:
+        from converters.downloader import get_info
+        info = await asyncio.get_event_loop().run_in_executor(None, get_info, url)
+        return JSONResponse(info)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/download")
+async def download_from_url(
+    url: str = Form(...),
+    format: str = Form("mp4"),
+    quality: str = Form("best"),
+):
+    """Baixa mídia de uma URL (YouTube, Instagram, TikTok, etc.)."""
+    if not url.startswith(("http://", "https://")):
+        raise HTTPException(status_code=400, detail="URL inválida")
+
+    job_id = uuid.uuid4().hex
+    job_dir = TEMP_DIR / f"dl_{job_id}"
+
+    try:
+        from converters.downloader import download as dl
+
+        output_path: Path = await asyncio.get_event_loop().run_in_executor(
+            None, dl, url, str(job_dir), format.lower(), quality.lower()
+        )
+
+        if not output_path.exists():
+            raise RuntimeError("Arquivo de saída não encontrado")
+
+        ext = output_path.suffix.lstrip(".")
+        MIME_DL = {
+            "mp4": "video/mp4", "webm": "video/webm", "mkv": "video/x-matroska",
+            "mp3": "audio/mpeg", "m4a": "audio/mp4", "ogg": "audio/ogg",
+            "flac": "audio/flac",
+        }
+        media_type = MIME_DL.get(ext, "application/octet-stream")
+
+        return FileResponse(
+            path=str(output_path),
+            media_type=media_type,
+            filename=output_path.name,
+            background=_cleanup_dir_task(job_dir),
+        )
+
+    except HTTPException:
+        shutil.rmtree(job_dir, ignore_errors=True)
+        raise
+    except Exception as e:
+        shutil.rmtree(job_dir, ignore_errors=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 def _cleanup(*paths):
     for p in paths:
         try:
@@ -158,6 +216,11 @@ def _cleanup(*paths):
 def _cleanup_task(*paths):
     from starlette.background import BackgroundTask
     return BackgroundTask(_cleanup, *paths)
+
+
+def _cleanup_dir_task(dirpath: Path):
+    from starlette.background import BackgroundTask
+    return BackgroundTask(shutil.rmtree, str(dirpath), True)
 
 
 # --- Servir frontend ---

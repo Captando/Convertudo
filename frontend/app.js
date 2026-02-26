@@ -105,23 +105,37 @@ let selectedFile = null;
 let formatsData = null;
 
 // Elements
-const dropZone     = document.getElementById('dropZone');
-const fileInput    = document.getElementById('fileInput');
-const stepUpload   = document.getElementById('step-upload');
+const dropZone      = document.getElementById('dropZone');
+const fileInput     = document.getElementById('fileInput');
+const stepUpload    = document.getElementById('step-upload');
 const stepConfigure = document.getElementById('step-configure');
-const stepResult   = document.getElementById('step-result');
-const fileName     = document.getElementById('fileName');
-const fileSize     = document.getElementById('fileSize');
-const fileIcon     = document.getElementById('fileIcon');
-const formatSelect = document.getElementById('formatSelect');
-const btnConvert   = document.getElementById('btnConvert');
+const stepResult    = document.getElementById('step-result');
+const fileName      = document.getElementById('fileName');
+const fileSize      = document.getElementById('fileSize');
+const fileIcon      = document.getElementById('fileIcon');
+const formatSelect  = document.getElementById('formatSelect');
+const btnConvert    = document.getElementById('btnConvert');
 const btnChangeFile = document.getElementById('btnChangeFile');
-const btnDownload  = document.getElementById('btnDownload');
-const btnReset     = document.getElementById('btnReset');
-const resultInfo   = document.getElementById('resultInfo');
-const errorToast   = document.getElementById('errorToast');
-const errorMessage = document.getElementById('errorMessage');
-const toastClose   = document.getElementById('toastClose');
+const btnDownload   = document.getElementById('btnDownload');
+const btnReset      = document.getElementById('btnReset');
+const resultInfo    = document.getElementById('resultInfo');
+const errorToast    = document.getElementById('errorToast');
+const errorMessage  = document.getElementById('errorMessage');
+const toastClose    = document.getElementById('toastClose');
+
+// URL downloader elements
+const tabFile        = document.getElementById('tabFile');
+const tabUrl         = document.getElementById('tabUrl');
+const panelFile      = document.getElementById('panelFile');
+const panelUrl       = document.getElementById('panelUrl');
+const urlInput       = document.getElementById('urlInput');
+const dlFormat       = document.getElementById('dlFormat');
+const dlQuality      = document.getElementById('dlQuality');
+const qualityGroup   = document.getElementById('qualityGroup');
+const btnDownloadUrl = document.getElementById('btnDownloadUrl');
+const urlMeta        = document.getElementById('urlMeta');
+const urlMetaTitle   = document.getElementById('urlMetaTitle');
+const urlMetaIcon    = document.getElementById('urlMetaIcon');
 
 // Load formats on startup
 (async () => {
@@ -132,6 +146,123 @@ const toastClose   = document.getElementById('toastClose');
     // Will show formats error when user tries to convert
   }
 })();
+
+// --- Mode Tabs ---
+
+tabFile.addEventListener('click', () => switchMode('file'));
+tabUrl.addEventListener('click', ()  => switchMode('url'));
+
+function switchMode(mode) {
+  if (mode === 'file') {
+    tabFile.classList.add('active');
+    tabUrl.classList.remove('active');
+    panelFile.classList.remove('hidden');
+    panelUrl.classList.add('hidden');
+  } else {
+    tabUrl.classList.add('active');
+    tabFile.classList.remove('active');
+    panelUrl.classList.remove('hidden');
+    panelFile.classList.add('hidden');
+  }
+}
+
+// --- URL Downloader ---
+
+// Validar URL e ativar botão
+urlInput.addEventListener('input', () => {
+  const val = urlInput.value.trim();
+  const valid = val.startsWith('http://') || val.startsWith('https://');
+  btnDownloadUrl.disabled = !valid;
+  if (!valid) {
+    urlMeta.classList.add('hidden');
+  }
+});
+
+// Esconder qualidade para formatos de áudio
+dlFormat.addEventListener('change', () => {
+  const isAudio = dlFormat.value === 'mp3' || dlFormat.value === 'm4a';
+  qualityGroup.style.opacity = isAudio ? '0.3' : '1';
+  qualityGroup.style.pointerEvents = isAudio ? 'none' : '';
+});
+
+// Buscar metadados ao sair do campo URL
+urlInput.addEventListener('blur', async () => {
+  const val = urlInput.value.trim();
+  if (!val.startsWith('http')) return;
+  try {
+    const resp = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(val)}`);
+    if (!resp.ok) return;
+    const info = await resp.json();
+    if (info.title) {
+      const iconMap = {
+        youtube: '▶️', instagram: '📸', tiktok: '🎵', twitter: '🐦',
+        facebook: '👤', twitch: '🟣',
+      };
+      const extKey = (info.extractor || '').toLowerCase();
+      const icon = Object.entries(iconMap).find(([k]) => extKey.includes(k))?.[1] || '🎬';
+      urlMetaIcon.textContent = icon;
+      urlMetaTitle.textContent = info.title;
+      urlMeta.classList.remove('hidden');
+    }
+  } catch {
+    // silently ignore
+  }
+});
+
+btnDownloadUrl.addEventListener('click', async () => {
+  const url = urlInput.value.trim();
+  if (!url) return;
+
+  const btnText    = btnDownloadUrl.querySelector('.btn-text');
+  const btnSpinner = btnDownloadUrl.querySelector('.btn-spinner');
+
+  btnDownloadUrl.disabled = true;
+  btnText.textContent = 'Baixando...';
+  btnSpinner.classList.remove('hidden');
+
+  try {
+    const formData = new FormData();
+    formData.append('url', url);
+    formData.append('format', dlFormat.value);
+    formData.append('quality', dlQuality.value);
+
+    const resp = await fetch(`${API_BASE}/api/download`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!resp.ok) {
+      let detail = `Erro ${resp.status}`;
+      try { const err = await resp.json(); detail = err.detail || detail; } catch {}
+      throw new Error(detail);
+    }
+
+    const blob = await resp.blob();
+
+    // Tentar obter o nome do arquivo do header Content-Disposition
+    let outName = `download.${dlFormat.value}`;
+    const cd = resp.headers.get('Content-Disposition');
+    if (cd) {
+      const match = cd.match(/filename\*?=(?:UTF-8'')?["']?([^"';\n]+)/i);
+      if (match) outName = decodeURIComponent(match[1]);
+    }
+
+    const blobUrl = URL.createObjectURL(blob);
+    btnDownload.href = blobUrl;
+    btnDownload.download = outName;
+
+    const platform = urlMetaTitle.textContent || url;
+    resultInfo.textContent = `${platform} · ${formatBytes(blob.size)}`;
+
+    showStep(stepResult);
+
+  } catch (err) {
+    showError(err.message || 'Erro ao baixar vídeo');
+    btnDownloadUrl.disabled = false;
+    btnText.textContent = '⬇ Baixar';
+    btnSpinner.classList.add('hidden');
+  }
+});
 
 // --- Drag & Drop ---
 
@@ -333,6 +464,13 @@ function resetToUpload() {
   formatSelect.innerHTML = '';
   btnConvert.querySelector('.btn-text').textContent = 'Converter';
   btnConvert.querySelector('.btn-spinner').classList.add('hidden');
+
+  // Resetar URL panel
+  urlInput.value = '';
+  urlMeta.classList.add('hidden');
+  btnDownloadUrl.disabled = true;
+  btnDownloadUrl.querySelector('.btn-text').textContent = '⬇ Baixar';
+  btnDownloadUrl.querySelector('.btn-spinner').classList.add('hidden');
 
   // Revogar URL do objeto anterior
   if (btnDownload.href && btnDownload.href.startsWith('blob:')) {
