@@ -4,35 +4,46 @@ const API_BASE = '';
 
 // Icons por categoria
 const CATEGORY_ICONS = {
-  'Imagem':         '🖼️',
-  'RAW':            '📷',
-  'HDR':            '✨',
-  'Adobe':          '🎨',
-  'Vetor/CNC':      '📐',
-  '3D':             '🧊',
-  'CAD':            '🔧',
-  'Áudio':          '🎵',
-  'Vídeo':          '🎬',
-  'Apresentação':   '📊',
-  'Documento':      '📄',
-  'eBook':          '📚',
-  'Dados':          '📈',
-  'Config':         '⚙️',
-  'Banco de dados': '🗄️',
-  'Notebook':       '📓',
-  'Fonte':          '🔤',
-  'Legenda':        '💬',
-  'Médico':         '🏥',
-  'Geoespacial':    '🌍',
-  'Arquivo':        '🗜️',
-  'Email':          '📧',
-  'Agenda':         '📅',
+  'Imagem':          '🖼️',
+  'RAW':             '📷',
+  'HDR':             '✨',
+  'Adobe':           '🎨',
+  'Vetor/CNC':       '📐',
+  '3D':              '🧊',
+  'CAD':             '🔧',
+  'Áudio':           '🎵',
+  'Vídeo':           '🎬',
+  'Apresentação':    '📊',
+  'Documento':       '📄',
+  'Office':          '📝',
+  'OpenDocument':    '📝',
+  'eBook':           '📚',
+  'Dados':           '📈',
+  'BigData':         '🗃️',
+  'Config':          '⚙️',
+  'Banco de dados':  '🗄️',
+  'Notebook':        '📓',
+  'Fonte':           '🔤',
+  'Legenda':         '💬',
+  'Médico':          '🏥',
+  'Geoespacial':     '🌍',
+  'Arquivo':         '🗜️',
+  'Email':           '📧',
+  'Agenda':          '📅',
+  'Certificado':     '🔐',
+  'Financeiro':      '💰',
+  'Código':          '💻',
+  'Científico':      '🔭',
+  'Bioinformática':  '🧬',
+  'Playlist':        '🎶',
+  'HAR':             '🌐',
 };
 
 const EXT_ICONS = {
   // Imagem
   png: '🖼️', jpg: '🖼️', jpeg: '🖼️', webp: '🖼️', gif: '🎞️', bmp: '🖼️',
   tiff: '🖼️', ico: '🖼️', heic: '📷', heif: '📷', avif: '🖼️',
+  tga: '🖼️', dds: '🖼️', pcx: '🖼️', ppm: '🖼️', pgm: '🖼️',
   // RAW
   cr2: '📷', nef: '📷', arw: '📷', dng: '📷', raf: '📷', orf: '📷', rw2: '📷',
   // HDR
@@ -45,14 +56,19 @@ const EXT_ICONS = {
   step: '🔧', stp: '🔧', iges: '🔧', igs: '🔧',
   // Áudio / Vídeo
   mp3: '🎵', wav: '🎵', flac: '🎵', ogg: '🎵', aac: '🎵', m4a: '🎵', wma: '🎵',
+  opus: '🎵', aiff: '🎵', aif: '🎵', amr: '🎵', ape: '🎵',
   mp4: '🎬', avi: '🎬', mkv: '🎬', mov: '🎬', webm: '🎬', flv: '🎬',
+  ts: '🎬', m2ts: '🎬', '3gp': '🎬', mpg: '🎬', mpeg: '🎬', wmv: '🎬', asf: '🎬', mxf: '🎬',
   // Apresentação
   pptx: '📊', ppt: '📊',
-  // Documento / eBook
+  // Documento / Office / eBook
   pdf: '📕', docx: '📝', txt: '📄', html: '🌐', md: '📝', epub: '📚',
-  // Dados / Config / DB
+  rtf: '📝', odt: '📝', tex: '📝', ods: '📊', odp: '📊',
+  // Dados / BigData / Config / DB
   csv: '📈', json: '📈', xlsx: '📈', xls: '📈',
+  parquet: '🗃️', jsonl: '🗃️', ndjson: '🗃️', feather: '🗃️', hdf5: '🗃️', h5: '🗃️',
   yaml: '⚙️', yml: '⚙️', toml: '⚙️', xml: '⚙️', ini: '⚙️',
+  env: '⚙️', properties: '⚙️', hcl: '⚙️',
   sqlite: '🗄️', db: '🗄️', sql: '🗄️',
   // Notebook
   ipynb: '📓',
@@ -67,7 +83,21 @@ const EXT_ICONS = {
   // Arquivo
   zip: '🗜️', tar: '🗜️', gz: '🗜️', '7z': '🗜️',
   // Email / Agenda
-  eml: '📧', ics: '📅', vcf: '📅',
+  eml: '📧', msg: '📧', mbox: '📧', ics: '📅', vcf: '📅',
+  // Certificados
+  pem: '🔐', crt: '🔐', cer: '🔐', der: '🔐', pfx: '🔐', p12: '🔐', key: '🔐',
+  // Financeiro
+  ofx: '💰', qfx: '💰', qif: '💰',
+  // Código
+  py: '💻', js: '💻', jsx: '💻', tsx: '💻', java: '💻', c: '💻', cpp: '💻',
+  h: '💻', hpp: '💻', go: '💻', rs: '💻', rb: '💻', php: '💻', cs: '💻',
+  swift: '💻', kt: '💻', sh: '💻', lua: '💻', dart: '💻', scala: '💻', r: '💻',
+  // Científico
+  fits: '🔭', fit: '🔭', fts: '🔭', nc: '🔭',
+  // Bioinformática
+  fasta: '🧬', fa: '🧬', fastq: '🧬', fq: '🧬',
+  // Playlist / HAR
+  m3u: '🎶', m3u8: '🎶', har: '🌐',
 };
 
 // State

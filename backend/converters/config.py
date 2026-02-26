@@ -41,6 +41,35 @@ def _load(input_path: str, ext: str) -> object:
             result[section] = dict(parser[section])
         return result
 
+    if ext in ("env", "properties"):
+        result = {}
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith(("#", "!")):
+                continue
+            if "=" in line:
+                k, _, v = line.partition("=")
+                result[k.strip()] = v.strip().strip('"').strip("'")
+            elif ":" in line:
+                k, _, v = line.partition(":")
+                result[k.strip()] = v.strip()
+        return result
+
+    if ext == "hcl":
+        # Parser manual básico para HCL simples (tipo Terraform .tfvars)
+        import re
+        result = {}
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            m = re.match(r'^(\w+)\s*=\s*(.*)', line)
+            if m:
+                k, v = m.group(1), m.group(2).strip()
+                v = v.strip('"').strip("'")
+                result[k] = v
+        return result
+
     raise ValueError(f"Formato de entrada não suportado: {ext}")
 
 

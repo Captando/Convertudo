@@ -52,3 +52,20 @@ py7zr
 # Agenda / Contatos
 icalendar
 vobject
+# Código-fonte (syntax highlight)
+Pygments
+# Big Data
+pyarrow
+# HDF5
+h5py
+# Científico
+astropy
+netCDF4
+# Certificados SSL/TLS
+cryptography
+# Financeiro (OFX)
+ofxparse
+# Email MSG (Outlook)
+extract-msg
+# Office aberto (RTF)
+striprtf
