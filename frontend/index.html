@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convertudo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">⇄</span>
+        <span class="logo-text">Convertudo</span>
+      </div>
+      <p class="tagline">Converta qualquer arquivo para qualquer formato</p>
+    </header>
+
+    <main class="main">
+      <!-- Step 1: Upload -->
+      <section id="step-upload" class="step active">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-content">
+            <div class="drop-icon">↑</div>
+            <p class="drop-text">Arraste seu arquivo aqui</p>
+            <p class="drop-sub">ou</p>
+            <label class="btn btn-secondary" for="fileInput">
+              Escolher arquivo
+            </label>
+            <input type="file" id="fileInput" hidden />
+          </div>
+        </div>
+        <div class="supported-hint">
+          <span>Suporta: Imagens • RAW • Adobe PSD/AI • Vetores • DXF • 3D • Áudio • Vídeo • Documentos • Dados</span>
+        </div>
+      </section>
+
+      <!-- Step 2: Configurar conversão -->
+      <section id="step-configure" class="step">
+        <div class="file-card" id="fileCard">
+          <div class="file-icon" id="fileIcon">📄</div>
+          <div class="file-info">
+            <span class="file-name" id="fileName">arquivo.png</span>
+            <span class="file-size" id="fileSize">0 KB</span>
+          </div>
+          <button class="btn-icon" id="btnChangeFile" title="Trocar arquivo">✕</button>
+        </div>
+
+        <div class="format-selector">
+          <label class="label" for="formatSelect">Converter para:</label>
+          <div class="select-wrapper">
+            <select id="formatSelect">
+              <option value="">Selecione o formato...</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-convert" id="btnConvert" disabled>
+          <span class="btn-text">Converter</span>
+          <span class="btn-spinner hidden">⟳</span>
+        </button>
+      </section>
+
+      <!-- Step 3: Resultado -->
+      <section id="step-result" class="step">
+        <div class="result-card">
+          <div class="result-icon">✓</div>
+          <h2 class="result-title">Conversão concluída!</h2>
+          <p class="result-info" id="resultInfo"></p>
+          <a class="btn btn-primary" id="btnDownload" download>
+            Baixar arquivo
+          </a>
+          <button class="btn btn-secondary" id="btnReset">
+            Converter outro arquivo
+          </button>
+        </div>
+      </section>
+
+      <!-- Error -->
+      <div class="error-toast hidden" id="errorToast">
+        <span id="errorMessage"></span>
+        <button class="toast-close" id="toastClose">✕</button>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Processamento local · Arquivos deletados após download</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

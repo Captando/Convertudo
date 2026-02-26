@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-multipart
+Pillow
+PyMuPDF
+python-docx
+weasyprint
+markdown
+pandas
+openpyxl
+rawpy
+numpy
+psd-tools
+cairosvg
+ezdxf
+trimesh
